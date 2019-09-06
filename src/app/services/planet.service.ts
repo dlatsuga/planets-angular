@@ -1,7 +1,7 @@
 import {Observable, Subject} from 'rxjs';
 
 export class PlanetService {
-  testPlanetName = 'test000';
+  testPlanetName = 'Naboo';
   myString$: Observable<string>;
   private stringSubject: Subject<string>;
 

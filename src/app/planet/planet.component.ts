@@ -1,15 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import {Component} from '@angular/core';
+import {PlanetService} from '../services/planet.service';
 
 @Component({
   selector: 'app-planet',
   templateUrl: './planet.component.html',
   styleUrls: ['./planet.component.css']
 })
-export class PlanetComponent implements OnInit {
+export class PlanetComponent {
+  private planet: string;
 
-  constructor() { }
-
-  ngOnInit() {
+  constructor(private planetService: PlanetService) {
+    planetService.myString$.subscribe((newString: string) => {this.planet = newString; });
+    planetService.emitCurrentState();
+    console.log('PlanetComponent: ', this.planet);
   }
-
 }

@@ -1,18 +1,11 @@
 import {Observable, Subject} from 'rxjs';
 
 export class PlanetService {
-  testPlanetName = 'Naboo';
   planet: Planet;
-  myString$: Observable<string>;
   myPlanet$: Observable<Planet>;
-  private stringSubject: Subject<string>;
   private planetSubject: Subject<Planet>;
 
-
   constructor() {
-    this.stringSubject = new Subject<string>();
-    this.myString$ = this.stringSubject.asObservable();
-
     this.planetSubject = new Subject<Planet>();
     this.myPlanet$ = this.planetSubject.asObservable();
   }
@@ -20,14 +13,6 @@ export class PlanetService {
   loadPlanet(planetName: string) {
     this.planet = new Planet(planetName, 2);
     this.planetSubject.next(this.planet);
-
-    this.testPlanetName = planetName;
-    console.log(this.testPlanetName);
-    this.stringSubject.next(this.testPlanetName);
-  }
-
-  emitCurrentState(): void {
-    this.stringSubject.next(this.testPlanetName);
   }
 }
 

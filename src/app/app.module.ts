@@ -1,13 +1,13 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
 
-import { AppComponent } from './app.component';
-import { UniverseComponent } from './universe/universe.component';
-import { PlanetComponent } from './planet/planet.component';
-import { PlanetListComponent } from './planet-list/planet-list.component';
-import { InhabitansComponent } from './inhabitans/inhabitans.component';
-import { InhabitanComponent } from './inhabitan/inhabitan.component';
-import {PlanetService} from './services/planet.service';
+import {AppComponent} from './app.component';
+import {UniverseComponent} from './universe/universe.component';
+import {PlanetComponent} from './planet/planet.component';
+import {PlanetListComponent} from './planet-list/planet-list.component';
+import {InhabitantsComponent} from './inhabitants/inhabitants.component';
+import {InhabitantComponent} from './inhabitant/inhabitant.component';
+import {UniverseService} from './services/universe.service';
 
 @NgModule({
   declarations: [
@@ -15,13 +15,14 @@ import {PlanetService} from './services/planet.service';
     UniverseComponent,
     PlanetComponent,
     PlanetListComponent,
-    InhabitansComponent,
-    InhabitanComponent
+    InhabitantsComponent,
+    InhabitantComponent
   ],
   imports: [
     BrowserModule
   ],
-  providers: [PlanetService],
+  providers: [UniverseService],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

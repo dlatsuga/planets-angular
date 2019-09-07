@@ -1,30 +1,51 @@
 import {Observable, Subject} from 'rxjs';
 
-export class PlanetService {
+export class UniverseService {
   planet: Planet;
-  myPlanet$: Observable<Planet>;
+  observablePlanet$: Observable<Planet>;
   private planetSubject: Subject<Planet>;
+
+  inhabitants: Array<string>;
+  observableInhabitants$: Observable<Array<string>>;
+  private inhabitantsSubject: Subject<Array<string>>;
+
   private _apiBase = 'https://swapi.co/api/planets/?search=';
-  private planetImages = new Map([
-    ['Naboo', 8],
-    ['Tatooine', 11],
-    ['Alderaan', 2 ]
+  private planetData = new Map([
+    ['Naboo', new Map<string, Array<string>|number>([
+      ['planetInhabitants', ['Wookie', 'Hutt', 'Trandoshan']],
+      ['planetId', 8]
+    ])],
+    ['Alderaan', new Map<string, Array<string>|number>([
+      ['planetInhabitants', ['Dug', 'Toydarian', 'Gungan']],
+      ['planetId', 2]
+    ])],
+    ['Tatooine', new Map<string, Array<string>|number>([
+      ['planetInhabitants', ['Ewok', 'Mon Calamari', 'Yoda\'s species']],
+      ['planetId', 11]
+    ])]
   ]);
 
   constructor() {
     this.planetSubject = new Subject<Planet>();
-    this.myPlanet$ = this.planetSubject.asObservable();
+    this.observablePlanet$ = this.planetSubject.asObservable();
+
+    this.inhabitantsSubject = new Subject<Array<string>>();
+    this.observableInhabitants$ = this.inhabitantsSubject.asObservable();
   }
 
-  async loadPlanet(planetName: string) {
-    const planetId = this.planetImages.get(planetName);
+  async loadPlanetInfo(planetName: string) {
+    const planetId = this.planetData.get(planetName).get('planetId');
     const imageBase = `https://starwars-visualguide.com/assets/img/planets/${planetId}.jpg`;
 
     const planetJson = await this.getPlanetData(planetName);
     this.planet = this.transformPlanet(planetJson)
       .setImageLink(imageBase)
       .build();
+
+    this.inhabitants = <Array<string>>this.planetData.get(planetName).get('planetInhabitants');
+
     this.planetSubject.next(this.planet);
+    this.inhabitantsSubject.next(this.inhabitants);
   }
 
   getPlanetData = async (url) => {
@@ -90,7 +111,8 @@ export class PlanetBuilder {
   private _diameter: number;
   private _imageLink: string;
 
-  constructor() {}
+  constructor() {
+  }
 
   setName(value: string) {
     this._name = value;

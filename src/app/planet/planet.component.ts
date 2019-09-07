@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {Planet, PlanetBuilder, PlanetService} from '../services/planet.service';
+import {Planet, PlanetBuilder, UniverseService} from '../services/universe.service';
 
 @Component({
   selector: 'app-planet',
@@ -9,7 +9,7 @@ import {Planet, PlanetBuilder, PlanetService} from '../services/planet.service';
 export class PlanetComponent {
   private planet: Planet;
 
-  constructor(private planetService: PlanetService) {
+  constructor(private universeService: UniverseService) {
     this.planet = new PlanetBuilder()
       .setName('Naboo')
       .setPopulation(4500000000)
@@ -17,7 +17,7 @@ export class PlanetComponent {
       .setClimate('temperate')
       .build();
 
-    planetService.myPlanet$.subscribe((newPlanet: Planet) => {this.planet = newPlanet; });
+    universeService.observablePlanet$.subscribe((newPlanet: Planet) => {this.planet = newPlanet; });
   }
 
   log() {

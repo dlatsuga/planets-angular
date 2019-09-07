@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {PlanetService} from '../services/planet.service';
+import {UniverseService} from '../services/universe.service';
 
 @Component({
   selector: 'app-planet-list',
@@ -8,10 +8,10 @@ import {PlanetService} from '../services/planet.service';
 })
 export class PlanetListComponent {
 
-  constructor(private planetService: PlanetService) {
+  constructor(private planetService: UniverseService) {
   }
 
   loadPlanet(planetName) {
-    this.planetService.loadPlanet(planetName);
+    this.planetService.loadPlanetInfo(planetName);
   }
 }

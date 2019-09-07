@@ -5,10 +5,10 @@ export class PlanetService {
   myPlanet$: Observable<Planet>;
   private planetSubject: Subject<Planet>;
   private _apiBase = 'https://swapi.co/api/planets/?search=';
-  private planetData = new Map([
-    ['Naboo', `Naboo`],
-    ['Tatooine', `Tatooine`],
-    ['Alderaan', `Alderaan`]
+  private planetImages = new Map([
+    ['Naboo', 8],
+    ['Tatooine', 11],
+    ['Alderaan', 2 ]
   ]);
 
   constructor() {
@@ -17,12 +17,17 @@ export class PlanetService {
   }
 
   async loadPlanet(planetName: string) {
-    const planetJson = await this.getResource(this.planetData.get(planetName));
-    this.planet = this.transformPlanet(planetJson);
+    const planetId = this.planetImages.get(planetName);
+    const imageBase = `https://starwars-visualguide.com/assets/img/planets/${planetId}.jpg`;
+
+    const planetJson = await this.getPlanetData(planetName);
+    this.planet = this.transformPlanet(planetJson)
+      .setImageLink(imageBase)
+      .build();
     this.planetSubject.next(this.planet);
   }
 
-  getResource = async (url) => {
+  getPlanetData = async (url) => {
     const res = await fetch(`${this._apiBase}${url}`);
 
     if (!res.ok) {
@@ -34,13 +39,11 @@ export class PlanetService {
 
   transformPlanet(planetJson) {
     const planetObj = planetJson.results[0];
-    console.log(planetObj, 'planetObj');
     return new PlanetBuilder()
       .setName(planetObj.name)
       .setPopulation(planetObj.population)
       .setDiameter(planetObj.diameter)
       .setClimate(planetObj.climate)
-      .build();
   }
 }
 
@@ -49,12 +52,14 @@ export class Planet {
   private _population: number;
   private _climate: string;
   private _diameter: number;
+  private _imageLink: string;
 
   constructor(planetBuilder: PlanetBuilder) {
     this._name = planetBuilder.name;
     this._population = planetBuilder.population;
     this._climate = planetBuilder.climate;
     this._diameter = planetBuilder.diameter;
+    this._imageLink = planetBuilder.imageLink;
   }
 
   get name(): string {
@@ -72,6 +77,10 @@ export class Planet {
   get diameter(): number {
     return this._diameter;
   }
+
+  get imageLink(): string {
+    return this._imageLink;
+  }
 }
 
 export class PlanetBuilder {
@@ -79,6 +88,7 @@ export class PlanetBuilder {
   private _population: number;
   private _climate: string;
   private _diameter: number;
+  private _imageLink: string;
 
   constructor() {}
 
@@ -102,6 +112,11 @@ export class PlanetBuilder {
     return this;
   }
 
+  setImageLink(value: string) {
+    this._imageLink = value;
+    return this;
+  }
+
   get name(): string {
     return this._name;
   }
@@ -116,6 +131,10 @@ export class PlanetBuilder {
 
   get diameter(): number {
     return this._diameter;
+  }
+
+  get imageLink(): string {
+    return this._imageLink;
   }
 
   build() {

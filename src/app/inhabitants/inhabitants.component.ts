@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {UniverseService} from '../services/universe.service';
+import {Inhabitant} from '../domain/inhabitant';
 
 @Component({
   selector: 'app-inhabitants',
@@ -7,11 +8,11 @@ import {UniverseService} from '../services/universe.service';
   styleUrls: ['./inhabitants.component.css']
 })
 export class InhabitantsComponent{
-  private inhabitants: Array<string>;
+  private inhabitants: Array<Inhabitant>;
 
   constructor(private universeService: UniverseService) {
 
     universeService.observableInhabitants$
-      .subscribe((newInhabitants: Array<string>) => {this.inhabitants = newInhabitants;});
+      .subscribe((newInhabitants: Array<Inhabitant>) => {this.inhabitants = newInhabitants;});
   }
 }

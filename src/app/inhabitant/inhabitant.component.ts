@@ -1,4 +1,5 @@
 import {Component, Input} from '@angular/core';
+import {Inhabitant} from '../domain/inhabitant';
 
 @Component({
   selector: 'app-inhabitant',
@@ -6,5 +7,5 @@ import {Component, Input} from '@angular/core';
   styleUrls: ['./inhabitant.component.css']
 })
 export class InhabitantComponent {
-  @Input() inhabitantItem: string;
+  @Input() inhabitantItem: Inhabitant;
 }

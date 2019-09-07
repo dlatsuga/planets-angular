@@ -1,64 +1,66 @@
 import {Observable, Subject} from 'rxjs';
+import {Planet, PlanetBuilder} from '../domain/planet';
+import {Inhabitant, InhabitantBuilder} from '../domain/inhabitant';
 
 export class UniverseService {
   planet: Planet;
   observablePlanet$: Observable<Planet>;
   private planetSubject: Subject<Planet>;
 
-  inhabitants: Array<string>;
-  observableInhabitants$: Observable<Array<string>>;
-  private inhabitantsSubject: Subject<Array<string>>;
-
-  private _apiBase = 'https://swapi.co/api/planets/?search=';
-  private planetData = new Map([
-    ['Naboo', new Map<string, Array<string>|number>([
-      ['planetInhabitants', ['Wookie', 'Hutt', 'Trandoshan']],
-      ['planetId', 8]
-    ])],
-    ['Alderaan', new Map<string, Array<string>|number>([
-      ['planetInhabitants', ['Dug', 'Toydarian', 'Gungan']],
-      ['planetId', 2]
-    ])],
-    ['Tatooine', new Map<string, Array<string>|number>([
-      ['planetInhabitants', ['Ewok', 'Mon Calamari', 'Yoda\'s species']],
-      ['planetId', 11]
-    ])]
-  ]);
+  private inhabitants: Array<string>;
+  tmpInhabitants: Array<Inhabitant>;
+  observableInhabitants$: Observable<Array<Inhabitant>>;
+  private inhabitantsSubject: Subject<Array<Inhabitant>>;
 
   constructor() {
     this.planetSubject = new Subject<Planet>();
     this.observablePlanet$ = this.planetSubject.asObservable();
 
-    this.inhabitantsSubject = new Subject<Array<string>>();
+    this.inhabitantsSubject = new Subject<Array<Inhabitant>>();
     this.observableInhabitants$ = this.inhabitantsSubject.asObservable();
   }
 
   async loadPlanetInfo(planetName: string) {
-    const planetId = this.planetData.get(planetName).get('planetId');
+    const planetId = Planet.getPlanetData().get(planetName).get('planetId');
     const imageBase = `https://starwars-visualguide.com/assets/img/planets/${planetId}.jpg`;
 
-    const planetJson = await this.getPlanetData(planetName);
-    this.planet = this.transformPlanet(planetJson)
+    const planetJson = await this.getUniverseData('planets', planetName);
+    this.planet = UniverseService.transformPlanet(planetJson)
       .setImageLink(imageBase)
       .build();
 
-    this.inhabitants = <Array<string>>this.planetData.get(planetName).get('planetInhabitants');
+    this.inhabitants = <Array<string>>Planet.getPlanetData().get(planetName).get('planetInhabitants');
+    this.tmp(this.inhabitants);
 
     this.planetSubject.next(this.planet);
-    this.inhabitantsSubject.next(this.inhabitants);
+    this.inhabitantsSubject.next(this.tmpInhabitants);
   }
 
-  getPlanetData = async (url) => {
-    const res = await fetch(`${this._apiBase}${url}`);
+  // TODO: rename
+  async tmp(inhabitants) {
+    this.tmpInhabitants = new Array<Inhabitant>(); //TODO: convert from global to local tmpInhabitants
+    for (let inhabitant of inhabitants) {
+      let inhabitantJson = await this.getUniverseData('species', inhabitant);
+      let inh = UniverseService.transformInhabitant(inhabitantJson)
+        .setImageLink('tmp_img')
+        .build();
+      this.tmpInhabitants.push(inh);
+    }
+  }
+
+
+  getUniverseData = async (category, name) => {
+    let _apiBase = `https://swapi.co/api/${category}/?search=${name}`;
+    const res = await fetch(_apiBase);
 
     if (!res.ok) {
-      throw new Error(`!!!!!Could not fetch ${url}` +
+      throw new Error(`Could not fetch ${_apiBase}` +
         `, received ${res.status}`);
     }
     return await res.json();
-  }
+  };
 
-  transformPlanet(planetJson) {
+  static transformPlanet(planetJson) {
     const planetObj = planetJson.results[0];
     return new PlanetBuilder()
       .setName(planetObj.name)
@@ -66,101 +68,14 @@ export class UniverseService {
       .setDiameter(planetObj.diameter)
       .setClimate(planetObj.climate)
   }
-}
 
-export class Planet {
-  private _name: string;
-  private _population: number;
-  private _climate: string;
-  private _diameter: number;
-  private _imageLink: string;
-
-  constructor(planetBuilder: PlanetBuilder) {
-    this._name = planetBuilder.name;
-    this._population = planetBuilder.population;
-    this._climate = planetBuilder.climate;
-    this._diameter = planetBuilder.diameter;
-    this._imageLink = planetBuilder.imageLink;
-  }
-
-  get name(): string {
-    return this._name;
-  }
-
-  get population(): number {
-    return this._population;
-  }
-
-  get climate(): string {
-    return this._climate;
-  }
-
-  get diameter(): number {
-    return this._diameter;
-  }
-
-  get imageLink(): string {
-    return this._imageLink;
+  static transformInhabitant(inhabitantJson) {
+    const inhabitantObj = inhabitantJson.results[0];
+    return new InhabitantBuilder()
+      .setName(inhabitantObj.name)
+      .setLanguage(inhabitantObj.language)
+      .setClassification(inhabitantObj.classification)
+      .setAverageHeight(inhabitantObj.average_height)
+      .setAverageLifespan(inhabitantObj.average_lifespan)
   }
 }
-
-export class PlanetBuilder {
-  private _name: string;
-  private _population: number;
-  private _climate: string;
-  private _diameter: number;
-  private _imageLink: string;
-
-  constructor() {
-  }
-
-  setName(value: string) {
-    this._name = value;
-    return this;
-  }
-
-  setPopulation(value: number) {
-    this._population = value;
-    return this;
-  }
-
-  setClimate(value: string) {
-    this._climate = value;
-    return this;
-  }
-
-  setDiameter(value: number) {
-    this._diameter = value;
-    return this;
-  }
-
-  setImageLink(value: string) {
-    this._imageLink = value;
-    return this;
-  }
-
-  get name(): string {
-    return this._name;
-  }
-
-  get population(): number {
-    return this._population;
-  }
-
-  get climate(): string {
-    return this._climate;
-  }
-
-  get diameter(): number {
-    return this._diameter;
-  }
-
-  get imageLink(): string {
-    return this._imageLink;
-  }
-
-  build() {
-    return new Planet(this);
-  }
-}
-

@@ -1,5 +1,8 @@
-<p>inhabitants works!</p>
-<hr>
-<p>{{inhabitants}}</p>
-<app-inhabitant *ngFor="let inhabitant of inhabitants" [inhabitantItem] = "inhabitant"></app-inhabitant>
+<div>
+  <h3>Inhabitants</h3>
+  <app-inhabitant
+    *ngFor="let inhabitant of inhabitants"
+    [inhabitantItem]="inhabitant"
+  ></app-inhabitant>
+</div>
 

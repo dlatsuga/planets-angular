@@ -1,14 +1,12 @@
 import {Observable, Subject} from 'rxjs';
-import {Planet, PlanetBuilder} from '../domain/planet';
-import {Inhabitant, InhabitantBuilder} from '../domain/inhabitant';
+import {Planet} from '../domain/planet';
+import {Inhabitant} from '../domain/inhabitant';
+import {Converter} from '../converter/converter';
 
 export class UniverseService {
-  planet: Planet;
   observablePlanet$: Observable<Planet>;
   private planetSubject: Subject<Planet>;
 
-  private inhabitants: Array<string>;
-  tmpInhabitants: Array<Inhabitant>;
   observableInhabitants$: Observable<Array<Inhabitant>>;
   private inhabitantsSubject: Subject<Array<Inhabitant>>;
 
@@ -22,32 +20,36 @@ export class UniverseService {
 
   async loadPlanetInfo(planetName: string) {
     const planetId = Planet.getPlanetData().get(planetName).get('planetId');
-    const imageBase = `https://starwars-visualguide.com/assets/img/planets/${planetId}.jpg`;
+    const planetImage = `https://starwars-visualguide.com/assets/img/planets/${planetId}.jpg`;
 
     const planetJson = await this.getUniverseData('planets', planetName);
-    this.planet = UniverseService.transformPlanet(planetJson)
-      .setImageLink(imageBase)
+    const planet = Converter.fromJsonToPlanet(planetJson)
+      .setImageLink(planetImage)
       .build();
 
-    this.inhabitants = <Array<string>>Planet.getPlanetData().get(planetName).get('planetInhabitants');
-    this.tmp(this.inhabitants);
+    const inhabitantsNames = <Array<string>>Planet.getPlanetData().get(planetName).get('planetInhabitants');
+    const inhabitants = await this.loadInhabitantsInfo(inhabitantsNames);
+    console.log(inhabitants);
 
-    this.planetSubject.next(this.planet);
-    this.inhabitantsSubject.next(this.tmpInhabitants);
+    this.planetSubject.next(planet);
+    this.inhabitantsSubject.next(inhabitants);
   }
 
-  // TODO: rename
-  async tmp(inhabitants) {
-    this.tmpInhabitants = new Array<Inhabitant>(); //TODO: convert from global to local tmpInhabitants
-    for (let inhabitant of inhabitants) {
-      let inhabitantJson = await this.getUniverseData('species', inhabitant);
-      let inh = UniverseService.transformInhabitant(inhabitantJson)
-        .setImageLink('tmp_img')
+  async loadInhabitantsInfo(inhabitantsNames) {
+    const inhabitants = new Array<Inhabitant>();
+    for (let inhabitantName of inhabitantsNames) {
+      const inhabitantId = Inhabitant.getInhabitantsImages().get(inhabitantName);
+      // console.log(inhabitantId);
+      const base = `https://starwars-visualguide.com/assets/img/species/${inhabitantId}.jpg`;
+      // console.log(base);
+      let inhabitantJson = await this.getUniverseData('species', inhabitantName);
+      let inhabitant = Converter.fromJsonToInhabitant(inhabitantJson)
+        .setImageLink(base)
         .build();
-      this.tmpInhabitants.push(inh);
+      inhabitants.push(inhabitant);
     }
+    return inhabitants;
   }
-
 
   getUniverseData = async (category, name) => {
     let _apiBase = `https://swapi.co/api/${category}/?search=${name}`;
@@ -60,22 +62,4 @@ export class UniverseService {
     return await res.json();
   };
 
-  static transformPlanet(planetJson) {
-    const planetObj = planetJson.results[0];
-    return new PlanetBuilder()
-      .setName(planetObj.name)
-      .setPopulation(planetObj.population)
-      .setDiameter(planetObj.diameter)
-      .setClimate(planetObj.climate)
-  }
-
-  static transformInhabitant(inhabitantJson) {
-    const inhabitantObj = inhabitantJson.results[0];
-    return new InhabitantBuilder()
-      .setName(inhabitantObj.name)
-      .setLanguage(inhabitantObj.language)
-      .setClassification(inhabitantObj.classification)
-      .setAverageHeight(inhabitantObj.average_height)
-      .setAverageLifespan(inhabitantObj.average_lifespan)
-  }
 }

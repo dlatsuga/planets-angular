@@ -6,6 +6,18 @@ export class Inhabitant {
   private readonly _averageLifespan: number;
   private readonly _imageLink: string;
 
+  static inhabitantsImages = new Map([
+    ['Wookie', 3],
+    ['Hutt', 5],
+    ['Trandoshan', 7],
+    ['Dug', 14],
+    ['Toydarian', 13],
+    ['Gungan', 12],
+    ['Ewok', 9],
+    ['Mon Calamari', 8],
+    ['Yoda\'s species', 6]
+  ]);
+
   constructor(inhabitantBuilder: InhabitantBuilder) {
     this._name = inhabitantBuilder.name;
     this._language = inhabitantBuilder.language;
@@ -37,6 +49,10 @@ export class Inhabitant {
 
   get imageLink(): string {
     return this._imageLink;
+  }
+
+  static getInhabitantsImages() {
+    return Inhabitant.inhabitantsImages;
   }
 }
 

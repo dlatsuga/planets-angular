@@ -13,6 +13,9 @@ export class InhabitantsComponent{
   constructor(private universeService: UniverseService) {
 
     universeService.observableInhabitants$
-      .subscribe((newInhabitants: Array<Inhabitant>) => {this.inhabitants = newInhabitants;});
+      .subscribe((newInhabitants: Array<Inhabitant>) => {
+        this.inhabitants = newInhabitants;
+      });
+
   }
 }

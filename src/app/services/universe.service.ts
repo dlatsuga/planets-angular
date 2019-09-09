@@ -18,7 +18,7 @@ export class UniverseService {
     this.observableInhabitants$ = this.inhabitantsSubject.asObservable();
   }
 
-  async loadPlanetInfo(planetName: string) {
+  loadPlanetInfo = async (planetName: string) => {
     console.log('start loadPlanetInfo');
     const planetId = Planet.getPlanetData().get(planetName).get('planetId');
     const planetImage = `https://starwars-visualguide.com/assets/img/planets/${planetId}.jpg`;
@@ -34,9 +34,9 @@ export class UniverseService {
     this.planetSubject.next(planet);
     this.inhabitantsSubject.next(inhabitants);
     console.log('end loadPlanetInfo');
-  }
+  };
 
-  async loadInhabitantsInfo(inhabitantsNames) {
+  loadInhabitantsInfo = async (inhabitantsNames) => {
     const inhabitants = new Array<Inhabitant>();
     for (let inhabitantName of inhabitantsNames) {
       const inhabitantId = Inhabitant.getInhabitantsImages().get(inhabitantName);
@@ -48,7 +48,7 @@ export class UniverseService {
       inhabitants.push(inhabitant);
     }
     return inhabitants;
-  }
+  };
 
   getUniverseData = async (category, name) => {
     let _apiBase = `https://swapi.co/api/${category}/?search=${name}`;

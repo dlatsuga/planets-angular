@@ -6,7 +6,7 @@ export class Inhabitant {
   private readonly _averageLifespan: number;
   private readonly _imageLink: string;
 
-  static inhabitantsImages = new Map([
+  static inhabitantsImagesId = new Map([
     ['Wookie', 3],
     ['Hutt', 5],
     ['Trandoshan', 7],
@@ -52,7 +52,7 @@ export class Inhabitant {
   }
 
   static getInhabitantsImages() {
-    return Inhabitant.inhabitantsImages;
+    return Inhabitant.inhabitantsImagesId;
   }
 }
 

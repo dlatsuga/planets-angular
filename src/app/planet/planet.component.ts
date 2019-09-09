@@ -15,12 +15,7 @@ export class PlanetComponent {
   constructor(private universeService: UniverseService) {
     universeService.observablePlanet$.subscribe((newPlanet: Planet) => {
       this.planet = newPlanet;
-      this.sendPlanetStatus();
+      this.planetStatusEmitter.emit(true)
     });
   }
-
-  sendPlanetStatus() {
-    this.planetStatusEmitter.emit(true)
-  }
-
 }

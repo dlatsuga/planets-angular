@@ -1,8 +1,6 @@
-<p>universe works!</p>
-<hr>
-<app-planet></app-planet>
-<hr>
-<hr>
+<app-greeting *ngIf="!planetExist"></app-greeting>
+<app-planet (planetStatusEmitter)="isPlanetExist($event)"></app-planet>
 <app-planet-list></app-planet-list>
+
 <app-inhabitants></app-inhabitants>
 <hr>

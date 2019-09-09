@@ -8,6 +8,7 @@ import {PlanetListComponent} from './planet-list/planet-list.component';
 import {InhabitantsComponent} from './inhabitants/inhabitants.component';
 import {InhabitantComponent} from './inhabitant/inhabitant.component';
 import {UniverseService} from './services/universe.service';
+import { GreetingComponent } from './greeting/greeting.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import {UniverseService} from './services/universe.service';
     PlanetComponent,
     PlanetListComponent,
     InhabitantsComponent,
-    InhabitantComponent
+    InhabitantComponent,
+    GreetingComponent
   ],
   imports: [
     BrowserModule

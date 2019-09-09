@@ -29,7 +29,6 @@ export class UniverseService {
 
     const inhabitantsNames = <Array<string>>Planet.getPlanetData().get(planetName).get('planetInhabitants');
     const inhabitants = await this.loadInhabitantsInfo(inhabitantsNames);
-    console.log(inhabitants);
 
     this.planetSubject.next(planet);
     this.inhabitantsSubject.next(inhabitants);
@@ -39,9 +38,7 @@ export class UniverseService {
     const inhabitants = new Array<Inhabitant>();
     for (let inhabitantName of inhabitantsNames) {
       const inhabitantId = Inhabitant.getInhabitantsImages().get(inhabitantName);
-      // console.log(inhabitantId);
       const base = `https://starwars-visualguide.com/assets/img/species/${inhabitantId}.jpg`;
-      // console.log(base);
       let inhabitantJson = await this.getUniverseData('species', inhabitantName);
       let inhabitant = Converter.fromJsonToInhabitant(inhabitantJson)
         .setImageLink(base)

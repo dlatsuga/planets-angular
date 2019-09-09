@@ -1,15 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-universe',
   templateUrl: './universe.component.html',
   styleUrls: ['./universe.component.css']
 })
-export class UniverseComponent implements OnInit {
+export class UniverseComponent {
+  planetExist:boolean = false;
 
-  constructor() { }
-
-  ngOnInit() {
+  isPlanetExist($event) {
+    this.planetExist = $event;
   }
-
 }

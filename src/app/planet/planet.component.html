@@ -1,9 +1,11 @@
-<div>
-  <h1>Planet</h1>
-  <img src="{{planet.imageLink}}" alt="planet">
-  <p>Name: {{planet.name}}</p>
-  <p>Population: {{planet.population}}</p>
-  <p>Climate: {{planet.climate}}</p>
-  <p>Diameter: {{planet.diameter}}</p>
-  <button (click)="log()" class="btn btn-info">Log me</button>
+<div *ngIf="planet" class="planet">
+  <div class="planet_image">
+    <img src="{{planet.imageLink}}" alt="planet">
+  </div>
+  <div class="planet_info">
+    <p>Name: {{planet.name}}</p>
+    <p>Population: {{planet.population}}</p>
+    <p>Climate: {{planet.climate}}</p>
+    <p>Diameter: {{planet.diameter}}</p>
+  </div>
 </div>

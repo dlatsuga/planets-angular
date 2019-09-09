@@ -1,6 +1,6 @@
-import {Component} from '@angular/core';
+import {Component, EventEmitter, Output} from '@angular/core';
 import {UniverseService} from '../services/universe.service';
-import {Planet, PlanetBuilder} from '../domain/planet';
+import {Planet} from '../domain/planet';
 
 @Component({
   selector: 'app-planet',
@@ -10,18 +10,17 @@ import {Planet, PlanetBuilder} from '../domain/planet';
 export class PlanetComponent {
   private planet: Planet;
 
+  @Output() planetStatusEmitter= new EventEmitter<boolean>();
+
   constructor(private universeService: UniverseService) {
-    this.planet = new PlanetBuilder()
-      .setName('Naboo')
-      .setPopulation(4500000000)
-      .setDiameter(12120)
-      .setClimate('temperate')
-      .build();
-
-    universeService.observablePlanet$.subscribe((newPlanet: Planet) => {this.planet = newPlanet; });
+    universeService.observablePlanet$.subscribe((newPlanet: Planet) => {
+      this.planet = newPlanet;
+      this.sendPlanetStatus();
+    });
   }
 
-  log() {
-    console.log('App works');
+  sendPlanetStatus() {
+    this.planetStatusEmitter.emit(true)
   }
+
 }

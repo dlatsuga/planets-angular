@@ -19,6 +19,7 @@ export class UniverseService {
   }
 
   async loadPlanetInfo(planetName: string) {
+    console.log('start loadPlanetInfo');
     const planetId = Planet.getPlanetData().get(planetName).get('planetId');
     const planetImage = `https://starwars-visualguide.com/assets/img/planets/${planetId}.jpg`;
 
@@ -32,6 +33,7 @@ export class UniverseService {
 
     this.planetSubject.next(planet);
     this.inhabitantsSubject.next(inhabitants);
+    console.log('end loadPlanetInfo');
   }
 
   async loadInhabitantsInfo(inhabitantsNames) {

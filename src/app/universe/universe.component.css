@@ -1,3 +1,5 @@
-/*.planet-box {*/
-/*  display: flex;*/
-/*}*/
+.planet-wrapper {
+  display: flex;
+  align-items: center;
+  height: 260px;
+}

@@ -1,5 +1,6 @@
 .inhabitant {
   display: flex;
+  align-items: center;
 }
 
 .inhabitant_image {
